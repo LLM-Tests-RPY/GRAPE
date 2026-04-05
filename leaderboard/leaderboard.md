@@ -11,11 +11,10 @@ This leaderboard is **auto-updated** when a submission PR is merged. For interac
 | 5 | AIkram | `VesselGAT` | `human` | 0.761905 | 2026-03-28T17:48:44Z | 3-layer GAT with skip connections mean+max pooling weighted CE for class imbalance |
 | 5 | Mubaraq | `GAT` | `human` | 0.761905 | 2026-03-25T19:06:52Z | - |
 | 5 | Sargam1412 | `BiGCN` | `human` | 0.761905 | 2026-03-23T13:48:19Z | Data augmentation to manage small dataset |
-| 5 | main | `DAGNet` | `human` | 0.761905 | 2026-03-07T17:24:29Z | Domain-Adversarial Graph Neural Network (DANN-GNN) for diabetic retinopathy detection on retinal vessel graphs. |
-| 10 | Tuga Yousif | `GCNConv` | `human` | 0.659091 | 2026-04-03T01:11:37Z | / |
+| 5 | emmanuel_owusu | `DAGNet` | `human` | 0.761905 | 2026-03-07T17:24:29Z | Domain-Adversarial Graph Neural Network (DANN-GNN) for diabetic retinopathy detection on retinal vessel graphs. |
 | 10 | Ignatius | `GAT` | `human` | 0.659091 | 2026-04-02T17:05:12Z | 3-layer GAT with multi-head attention multiple pooling strategies and graph-level features. |
-| 12 | SanaeZR | `GCN` | `human` | 0.583333 | 2026-03-16T00:08:57Z | 2-layer GCN |
-| 13 | Idrees_Bhat | `GrapeGAT-Optimized` | `human` | 0.524887 | 2026-03-27T06:17:35Z | Improved GAT with correct graph feature batching bidirectional edges residual connections and label smoothing |
-| 14 | Abderrahmane | `GCN # Name of your model (optional)` | `human` | 0.488636 | 2026-03-28T17:33:09Z | 3-layer GCN (node degree as additional feature) |
-| 15 | El-Ikram | `GrapeGAT` | `human` | 0.400000 | 2026-03-14T16:06:14Z | / |
-| 15 | Maha | - | `human` | 0.400000 | 2026-03-04T14:35:23Z | this was hard |
+| 11 | SanaeZR | `GCN` | `human` | 0.583333 | 2026-03-16T00:08:57Z | 2-layer GCN |
+| 12 | Idrees_Bhat | `GrapeGAT-Optimized` | `human` | 0.524887 | 2026-03-27T06:17:35Z | Improved GAT with correct graph feature batching bidirectional edges residual connections and label smoothing |
+| 13 | Abderrahmane | `GCN` | `human` | 0.488636 | 2026-03-28T17:33:09Z | 3-layer GCN (node degree as additional feature) |
+| 14 | El-Ikram | `GrapeGAT` | `human` | 0.400000 | 2026-03-14T16:06:14Z | / |
+| 14 | Maha | - | `human` | 0.400000 | 2026-03-04T14:35:23Z | this was hard |
