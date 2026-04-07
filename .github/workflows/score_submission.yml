@@ -65,9 +65,11 @@ jobs:
 
       - name: Enforce one-submission policy
         run: |
-          TEAM="${{ steps.team.outputs.name }}"
-          if grep -qi ",$TEAM," leaderboard/leaderboard.csv 2>/dev/null; then
-            echo "::error::Team '$TEAM' has already submitted."
+          GITHUB_USER="$(echo "${{ github.event.pull_request.user.login }}" | tr '[:upper:]' '[:lower:]')"
+          USER_DB=".github/submitted_github_users.txt"
+          touch "$USER_DB"
+          if grep -Fxqi "$GITHUB_USER" "$USER_DB"; then
+            echo "::error::GitHub user '$GITHUB_USER' has already submitted."
             exit 1
           fi
 
@@ -128,6 +130,8 @@ jobs:
       - name: Update leaderboard
         run: |
           TEAM="${{ steps.team.outputs.name }}"
+          GITHUB_USER="$(echo "${{ github.event.pull_request.user.login }}" | tr '[:upper:]' '[:lower:]')"
+          USER_DB=".github/submitted_github_users.txt"
           F1="${{ steps.eval.outputs.f1 }}"
           AUC="${{ steps.eval.outputs.auc }}"
           MODEL="${{ steps.meta.outputs.model }}"
@@ -144,6 +148,12 @@ jobs:
           # Append to leaderboard CSV (columns: timestamp_utc,team,model,type,score,notes)
           echo "${TIMESTAMP},${TEAM},${MODEL},${TYPE},${F1},${NOTES}" >> leaderboard/leaderboard.csv
 
+          # Track GitHub usernames that have submitted
+          touch "$USER_DB"
+          if ! grep -Fxqi "$GITHUB_USER" "$USER_DB"; then
+            echo "$GITHUB_USER" >> "$USER_DB"
+          fi
+
           # Render leaderboard markdown
           python competition/render_leaderboard.py
 
@@ -154,7 +164,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add leaderboard/ docs/leaderboard.csv
+          git add leaderboard/ docs/leaderboard.csv .github/submitted_github_users.txt
           git commit -m "🏆 Leaderboard update: ${{ steps.team.outputs.name }} (F1=${{ steps.eval.outputs.f1 }})"
           git push
 
