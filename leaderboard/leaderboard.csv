@@ -13,3 +13,4 @@ timestamp_utc,team,model,type,score,notes
 2026-04-02T17:05:12Z,Ignatius,GAT,human,0.659091,3-layer GAT with multi-head attention multiple pooling strategies and graph-level features.
 2026-04-03T00:42:05Z,TugaYousif,GATConv,human,0.829545,/
 2026-04-04T00:03:19Z,Murad,GIN,human,0.761905,3-layer GIN with JumpingKnowledge multi-pool spectral+topological graph features 5-model full-retrain ensemble DropEdge label smoothing
+2026-04-09T19:09:49Z,Elhouiti_Ikram,GIN,human+llm,0.761905,/
