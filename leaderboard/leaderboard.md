@@ -7,7 +7,7 @@ This leaderboard is **auto-updated** when a submission PR is merged. For interac
 | 1 | samuel | `GIN` | `human` | 0.829545 | 2026-03-11T19:49:15Z | GCN and GIN layers |
 | 1 | peguy_team | `GCN_degree` | `human` | 0.829545 | 2026-03-08T18:06:22Z | 3-layer GCN with node degree feature and global mean/max/sum pooling |
 | 1 | faranbutt | - | `human` | 0.829545 | 2026-03-03T08:40:26Z | - |
-| 5 | Elhouiti_Ikram | `GIN` | `human+llm` | 0.761905 | 2026-04-09T19:09:49Z | / |
+| 5 | Elhouiti_Ikram | `GIN` | `human+llm` | 0.761905 | 2026-04-09T19:09:49Z | 1 layer GIN |
 | 5 | Murad | `GIN` | `human` | 0.761905 | 2026-04-04T00:03:19Z | 3-layer GIN with JumpingKnowledge multi-pool spectral+topological graph features 5-model full-retrain ensemble DropEdge label smoothing |
 | 5 | AIkram | `VesselGAT` | `human` | 0.761905 | 2026-03-28T17:48:44Z | 3-layer GAT with skip connections mean+max pooling weighted CE for class imbalance |
 | 5 | Mubaraq | `GAT` | `human` | 0.761905 | 2026-03-25T19:06:52Z | - |
