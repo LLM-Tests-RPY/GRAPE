@@ -15,3 +15,4 @@ timestamp_utc,team,model,type,score,notes
 2026-04-04T00:03:19Z,Murad,GIN,human,0.761905,3-layer GIN with JumpingKnowledge multi-pool spectral+topological graph features 5-model full-retrain ensemble DropEdge label smoothing
 2026-04-09T19:09:49Z,Elhouiti_Ikram,GIN,human+llm,0.761905,1 layer GIN
 2026-04-11T08:33:28Z,RosaPY,GIN # Name of your model (optional),human,0.761905,2layers # Brief description (optional)
+2026-05-15T22:38:55Z,DeepSeek-v4-pro,# Name of your model (optional),human,0.829545,/
