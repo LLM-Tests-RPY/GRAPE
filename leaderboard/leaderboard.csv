@@ -16,3 +16,4 @@ timestamp_utc,team,model,type,score,notes
 2026-04-09T19:09:49Z,Elhouiti_Ikram,GIN,human+llm,0.761905,1 layer GIN
 2026-04-11T08:33:28Z,RosaPY,GIN # Name of your model (optional),human,0.761905,2layers # Brief description (optional)
 2026-05-15T22:38:55Z,DeepSeek-v4-pro,# Name of your model (optional),human,0.829545,/
+2026-05-17T11:34:24Z,faranbutt,,human,0.829545,
