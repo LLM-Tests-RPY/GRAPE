@@ -20,4 +20,5 @@ This leaderboard is **auto-updated** when a submission PR is merged. For interac
 | 15 | SanaeZR | `GCN` | `human` | 0.583333 | 2026-03-16T00:08:57Z | 2-layer GCN |
 | 16 | Idrees_Bhat | `GrapeGAT-Optimized` | `human` | 0.524887 | 2026-03-27T06:17:35Z | Improved GAT with correct graph feature batching bidirectional edges residual connections and label smoothing |
 | 17 | Abderrahmane | `GCN` | `human` | 0.488636 | 2026-03-28T17:33:09Z | 3-layer GCN (node degree as additional feature) |
-| 18 | Maha | - | `human` | 0.400000 | 2026-03-04T14:35:23Z | this was hard |
+| 18 | gpt5.4 | - | `human` | 0.444444 | 2026-05-17T20:51:38Z | - |
+| 19 | Maha | - | `human` | 0.400000 | 2026-03-04T14:35:23Z | this was hard |
