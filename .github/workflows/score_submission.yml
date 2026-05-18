@@ -63,30 +63,6 @@ jobs:
           python encryption/decrypt.py "$ENC" /tmp/predictions.csv
           echo "name=$TEAM" >> "$GITHUB_OUTPUT"
 
-      - name: Enforce one-submission policy
-        run: |
-          GITHUB_USER="$(echo "${{ github.event.pull_request.user.login }}" | tr '[:upper:]' '[:lower:]')"
-          USER_DB=".github/submitted_github_users.txt"
-          touch "$USER_DB"
-          if grep -Fxqi "$GITHUB_USER" "$USER_DB"; then
-            echo "::error::GitHub user '$GITHUB_USER' has already submitted."
-            exit 1
-          fi
-
-      - name: Validate submission format
-        run: python competition/validate_submission.py /tmp/predictions.csv data/public/test_data.csv
-
-      - name: Evaluate
-        id: eval
-        run: |
-          echo "${{ secrets.TEST_LABELS_CSV }}" > /tmp/test_labels.csv
-          OUTPUT=$(python competition/evaluate.py /tmp/predictions.csv /tmp/test_labels.csv)
-          echo "$OUTPUT"
-          F1=$(echo "$OUTPUT" | grep MACRO_F1 | cut -d= -f2)
-          AUC=$(echo "$OUTPUT" | grep AUROC | cut -d= -f2)
-          echo "f1=$F1" >> "$GITHUB_OUTPUT"
-          echo "auc=$AUC" >> "$GITHUB_OUTPUT"
-
       - name: Read optional meta.yaml
         id: meta
         run: |
@@ -112,7 +88,7 @@ jobs:
             MODEL=$(awk -F': ' '/^[Mm]odel:/{print $2}' "$META" | head -1 | tr ',' ' ' | xargs)
             NOTES=$(awk -F': ' '/^[Nn]otes:/{print $2}' "$META" | head -1 | tr ',' ' ' | xargs)
             TYPE=$(awk -F': ' '/^[Tt]ype:/{print $2}' "$META" | head -1 | tr ',' ' ' | xargs)
-            TYPE=$(echo "$TYPE" | tr -d '\r\n' | xargs)
+            TYPE=$(echo "$TYPE" | tr -d '\r\n' | tr '[:upper:]' '[:lower:]' | xargs)
             echo "Parsed MODEL=$MODEL"
             echo "Parsed NOTES=$NOTES"
             echo "Parsed TYPE=$TYPE"
@@ -123,9 +99,48 @@ jobs:
           if [ -z "$TYPE" ]; then
             TYPE="human"
           fi
+          # Validate type value
+          if [ -n "$TYPE" ] && [ "$TYPE" != "human" ] && [ "$TYPE" != "llm" ] && [ "$TYPE" != "human+llm" ]; then
+            echo "::warning::Invalid type '$TYPE'. Must be human, llm, or human+llm. Defaulting to human."
+            TYPE="human"
+          fi
           echo "model=$MODEL" >> "$GITHUB_OUTPUT"
           echo "notes=$NOTES" >> "$GITHUB_OUTPUT"
           echo "type=$TYPE" >> "$GITHUB_OUTPUT"
+
+      - name: Enforce one-submission policy
+        run: |
+          GITHUB_USER="$(echo "${{ github.event.pull_request.user.login }}" | tr '[:upper:]' '[:lower:]')"
+          USER_DB=".github/submitted_github_users.txt"
+          TYPE="${{ steps.meta.outputs.type }}"
+          touch "$USER_DB"
+          RECORD="${GITHUB_USER}:${TYPE}"
+          
+          # Backwards compatibility: existing entries (just username) count as human submission
+          if grep -Fxqi "$GITHUB_USER" "$USER_DB" && [ "$TYPE" = "human" ]; then
+            echo "::error::GitHub user '$GITHUB_USER' has already submitted as human."
+            exit 1
+          fi
+          
+          # Exact match for type
+          if grep -Fxqi "$RECORD" "$USER_DB"; then
+            echo "::error::GitHub user '$GITHUB_USER' has already submitted a '$TYPE' type."
+            exit 1
+          fi
+
+      - name: Validate submission format
+        run: python competition/validate_submission.py /tmp/predictions.csv data/public/test_data.csv
+
+      - name: Evaluate
+        id: eval
+        run: |
+          echo "${{ secrets.TEST_LABELS_CSV }}" > /tmp/test_labels.csv
+          OUTPUT=$(python competition/evaluate.py /tmp/predictions.csv /tmp/test_labels.csv)
+          echo "$OUTPUT"
+          F1=$(echo "$OUTPUT" | grep MACRO_F1 | cut -d= -f2)
+          AUC=$(echo "$OUTPUT" | grep AUROC | cut -d= -f2)
+          echo "f1=$F1" >> "$GITHUB_OUTPUT"
+          echo "auc=$AUC" >> "$GITHUB_OUTPUT"
 
       - name: Update leaderboard
         run: |
@@ -139,19 +154,14 @@ jobs:
           TYPE="${{ steps.meta.outputs.type }}"
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-          # Validate type value
-          if [ -n "$TYPE" ] && [ "$TYPE" != "human" ] && [ "$TYPE" != "llm" ] && [ "$TYPE" != "human+llm" ]; then
-            echo "::warning::Invalid type '$TYPE'. Must be human, llm, or human+llm. Defaulting to human."
-            TYPE="human"
-          fi
-
           # Append to leaderboard CSV (columns: timestamp_utc,team,model,type,score,notes)
           echo "${TIMESTAMP},${TEAM},${MODEL},${TYPE},${F1},${NOTES}" >> leaderboard/leaderboard.csv
 
           # Track GitHub usernames that have submitted
           touch "$USER_DB"
-          if ! grep -Fxqi "$GITHUB_USER" "$USER_DB"; then
-            echo "$GITHUB_USER" >> "$USER_DB"
+          RECORD="${GITHUB_USER}:${TYPE}"
+          if ! grep -Fxqi "$RECORD" "$USER_DB" && ! (grep -Fxqi "$GITHUB_USER" "$USER_DB" && [ "$TYPE" = "human" ]); then
+            echo "$RECORD" >> "$USER_DB"
           fi
 
           # Render leaderboard markdown
