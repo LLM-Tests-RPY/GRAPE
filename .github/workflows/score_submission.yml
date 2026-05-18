@@ -87,13 +87,14 @@ jobs:
           echo "Found metadata file: $META"
           
           # Use python to parse YAML reliably
-          python -c "
+          cat << 'EOF' > parse_meta.py
 import yaml
 import os
 import sys
 
+meta_file = sys.argv[1]
 try:
-    with open('$META', 'r') as f:
+    with open(meta_file, 'r') as f:
         data = yaml.safe_load(f) or {}
 except Exception as e:
     print('::error::Failed to parse meta.yaml format: ' + str(e))
@@ -104,18 +105,19 @@ notes = str(data.get('notes', '')).strip().replace('\n', ' ')
 sub_type = str(data.get('type', '')).strip().lower()
 
 if not sub_type:
-    print('::error::The \'type\' field is missing in meta.yaml. It must be human, llm, or human+llm.')
+    print("::error::The 'type' field is missing in meta.yaml. It must be human, llm, or human+llm.")
     sys.exit(1)
 
 if sub_type not in ['human', 'llm', 'human+llm']:
-    print('::error::Invalid type \\\'' + sub_type + '\\\'. Must be human, llm, or human+llm.')
+    print("::error::Invalid type '" + sub_type + "'. Must be human, llm, or human+llm.")
     sys.exit(1)
 
 with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
     out.write('model=' + model + '\n')
     out.write('notes=' + notes + '\n')
     out.write('type=' + sub_type + '\n')
-"
+EOF
+          python parse_meta.py "$META"
 
       - name: Enforce one-submission policy
         run: |
