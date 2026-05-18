@@ -31,7 +31,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install pandas scikit-learn cryptography
+        run: pip install pandas scikit-learn cryptography pyyaml
 
       - name: Detect team and decrypt
         id: team
@@ -63,7 +63,7 @@ jobs:
           python encryption/decrypt.py "$ENC" /tmp/predictions.csv
           echo "name=$TEAM" >> "$GITHUB_OUTPUT"
 
-      - name: Read optional meta.yaml
+      - name: Read and parse compulsory meta.yaml
         id: meta
         run: |
           TEAM="${{ steps.team.outputs.name }}"
@@ -79,34 +79,43 @@ jobs:
             META=$(find pr-submission/submissions/inbox \( -name "meta.yaml" -o -name "meta.yml" \) | head -1)
           fi
 
-          MODEL=""
-          NOTES=""
-          TYPE=""
-          if [ -n "$META" ]; then
-            echo "Found metadata file: $META"
-            cat "$META"
-            MODEL=$(awk -F': ' '/^[Mm]odel:/{print $2}' "$META" | head -1 | tr ',' ' ' | xargs)
-            NOTES=$(awk -F': ' '/^[Nn]otes:/{print $2}' "$META" | head -1 | tr ',' ' ' | xargs)
-            TYPE=$(awk -F': ' '/^[Tt]ype:/{print $2}' "$META" | head -1 | tr ',' ' ' | xargs)
-            TYPE=$(echo "$TYPE" | tr -d '\r\n' | tr '[:upper:]' '[:lower:]' | xargs)
-            echo "Parsed MODEL=$MODEL"
-            echo "Parsed NOTES=$NOTES"
-            echo "Parsed TYPE=$TYPE"
-          else
-            echo "No meta.yaml found anywhere in submissions/inbox/"
+          if [ -z "$META" ]; then
+            echo "::error::No meta.yaml found in PR under submissions/inbox/. A meta.yaml file is compulsory."
+            exit 1
           fi
-          # Default type to human if not specified
-          if [ -z "$TYPE" ]; then
-            TYPE="human"
-          fi
-          # Validate type value
-          if [ -n "$TYPE" ] && [ "$TYPE" != "human" ] && [ "$TYPE" != "llm" ] && [ "$TYPE" != "human+llm" ]; then
-            echo "::warning::Invalid type '$TYPE'. Must be human, llm, or human+llm. Defaulting to human."
-            TYPE="human"
-          fi
-          echo "model=$MODEL" >> "$GITHUB_OUTPUT"
-          echo "notes=$NOTES" >> "$GITHUB_OUTPUT"
-          echo "type=$TYPE" >> "$GITHUB_OUTPUT"
+
+          echo "Found metadata file: $META"
+          
+          # Use python to parse YAML reliably
+          python -c "
+import yaml
+import os
+import sys
+
+try:
+    with open('$META', 'r') as f:
+        data = yaml.safe_load(f) or {}
+except Exception as e:
+    print('::error::Failed to parse meta.yaml format: ' + str(e))
+    sys.exit(1)
+
+model = str(data.get('model', 'not specified')).strip().replace('\n', ' ')
+notes = str(data.get('notes', '')).strip().replace('\n', ' ')
+sub_type = str(data.get('type', '')).strip().lower()
+
+if not sub_type:
+    print('::error::The \'type\' field is missing in meta.yaml. It must be human, llm, or human+llm.')
+    sys.exit(1)
+
+if sub_type not in ['human', 'llm', 'human+llm']:
+    print('::error::Invalid type \\\'' + sub_type + '\\\'. Must be human, llm, or human+llm.')
+    sys.exit(1)
+
+with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+    out.write('model=' + model + '\n')
+    out.write('notes=' + notes + '\n')
+    out.write('type=' + sub_type + '\n')
+"
 
       - name: Enforce one-submission policy
         run: |
