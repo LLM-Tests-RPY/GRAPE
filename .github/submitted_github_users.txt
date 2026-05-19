@@ -8,3 +8,4 @@ faranbutt:llm
 pavelmurad:llm
 mubbytheback:llm
 tugaahmed:human
+tugaahmed:llm
