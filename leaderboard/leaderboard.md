@@ -19,9 +19,10 @@ This leaderboard is **auto-updated** when a submission PR is merged. For interac
 | 9 | Mubaraq | `GAT` | `human` | 0.761905 | 2026-03-25T19:06:52Z | - |
 | 9 | Sargam1412 | `BiGCN` | `human` | 0.761905 | 2026-03-23T13:48:19Z | Data augmentation to manage small dataset |
 | 9 | emmanuel_owusu | `DAGNet` | `human` | 0.761905 | 2026-03-07T17:24:29Z | Domain-Adversarial Graph Neural Network (DANN-GNN) for diabetic retinopathy detection on retinal vessel graphs. |
+| 17 | Tuga Yousif | `GCNConv` | `human` | 0.659091 | 2026-05-19T01:11:26Z | / |
 | 17 | Ignatius | `GAT` | `human` | 0.659091 | 2026-04-02T17:05:12Z | 3-layer GAT with multi-head attention multiple pooling strategies and graph-level features. |
-| 18 | SanaeZR | `GCN` | `human` | 0.583333 | 2026-03-16T00:08:57Z | 2-layer GCN |
-| 19 | Idrees_Bhat | `GrapeGAT-Optimized` | `human` | 0.524887 | 2026-03-27T06:17:35Z | Improved GAT with correct graph feature batching bidirectional edges residual connections and label smoothing |
-| 20 | Abderrahmane | `GCN` | `human` | 0.488636 | 2026-03-28T17:33:09Z | 3-layer GCN (node degree as additional feature) |
-| 21 | gpt5.4 | - | `llm` | 0.444444 | 2026-05-17T20:51:38Z | - |
-| 22 | Maha | - | `human` | 0.400000 | 2026-03-04T14:35:23Z | this was hard |
+| 19 | SanaeZR | `GCN` | `human` | 0.583333 | 2026-03-16T00:08:57Z | 2-layer GCN |
+| 20 | Idrees_Bhat | `GrapeGAT-Optimized` | `human` | 0.524887 | 2026-03-27T06:17:35Z | Improved GAT with correct graph feature batching bidirectional edges residual connections and label smoothing |
+| 21 | Abderrahmane | `GCN` | `human` | 0.488636 | 2026-03-28T17:33:09Z | 3-layer GCN (node degree as additional feature) |
+| 22 | gpt5.4 | - | `llm` | 0.444444 | 2026-05-17T20:51:38Z | - |
+| 23 | Maha | - | `human` | 0.400000 | 2026-03-04T14:35:23Z | this was hard |
